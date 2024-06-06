@@ -138,7 +138,7 @@ public class RoomGatewayService implements RoomGateway{
     
     private void notificateNewAsync(){
         Thread notificator = new Thread(() -> {
-
+            
         });
         notificator.start();
     }

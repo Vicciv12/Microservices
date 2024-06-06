@@ -24,7 +24,7 @@ public class UserDatailsServiceData implements UserDetailsService{
             throw new UsernameNotFoundException("usuario não encontrado");
         }
 
-        return listOfAuths.getFirst();
+        return listOfAuths.get(0);
     }
     
 }
