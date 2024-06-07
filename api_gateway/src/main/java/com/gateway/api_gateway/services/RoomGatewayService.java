@@ -1,16 +1,18 @@
 package com.gateway.api_gateway.services;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gateway.api_gateway.core.RoomGateway;
 import com.gateway.api_gateway.core.http.HttpResponse;
 import com.gateway.api_gateway.core.http.HttpServices;
+import com.gateway.api_gateway.models.dto.EmailsDto;
 import com.gateway.api_gateway.models.exceptions.BadGatewayException;
 import com.gateway.api_gateway.models.exceptions.BadRequestException;
 
@@ -71,7 +73,7 @@ public class RoomGatewayService implements RoomGateway{
             throw new BadRequestException(response.getBody(), response.getStatusCode());
         }
 
-        notificateNewAsync();
+        notificateNewAsync(request);
 
         return ResponseEntity.ok(response.getBody());
     }
@@ -133,14 +135,57 @@ public class RoomGatewayService implements RoomGateway{
     }
 
     private String getDnsUrl(String appName){
+        if(appName.equals("authorization_service")){
+            return "http://localhost:8081";
+        }
         return "http://localhost:8082";
     }
     
-    private void notificateNewAsync(){
+    @SuppressWarnings({"unused"})
+    private void notificateNewAsync(HttpServletRequest request){
         Thread notificator = new Thread(() -> {
+            try {
+                Set<String> emails = getListEmails(request);
+            } catch (BadGatewayException |  BadRequestException e) { 
+                //add log
+            }
             
         });
         notificator.start();
     }
+
+    private Set<String> getListEmails(HttpServletRequest request) throws BadGatewayException, BadRequestException{
+        HttpResponse response = null;
+        Set<String> emailsList = new HashSet<>();
+        String baseUrl = getDnsUrl("authorization_service");
+        try {
+            Map<String, String> headers = new HashMap<>(){{
+                put(tokenName, extractToken(request));
+                put("Content-Type", "application/json");
+            }};
+            response = httpServices.sendGet(baseUrl+"/all/email", headers);
+        } catch (Exception e) {
+            throw new BadGatewayException("BadGateway", 502);
+        }
+
+
+
+        if (response != null && response.getStatusCode() == 200) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                EmailsDto emails = mapper.readValue(response.getBody(), EmailsDto.class);
+                emailsList = emails.getEmails();
+            } catch (Exception e) {
+                throw new BadRequestException("BadRequest: "+e.getMessage(), 400);
+            }
+            
+        } else {
+            throw new BadRequestException("BadRequest", 400);
+        }
+
+        return emailsList;
+
+    }
+    
 
 }

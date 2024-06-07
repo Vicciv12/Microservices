@@ -1,4 +1,4 @@
-package com.authorization.authorization_service.config;
+package com.notification.notification_service.config;
 
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Value;

@@ -13,6 +13,8 @@ import com.authorization.authorization_service.core.ProfessorService;
 import com.authorization.authorization_service.core.RequestValidator;
 import com.authorization.authorization_service.core.repositorys.AuthRepository;
 import com.authorization.authorization_service.models.dto.NovoProfessorDto;
+import com.authorization.authorization_service.models.res.EmailsResponse;
+
 import jakarta.validation.Valid;
 
 @RestController
@@ -34,12 +36,12 @@ public class ProfessorController {
     }
 
     @GetMapping("/all/email")
-    public ResponseEntity<Set<String>> listAllEmail(){
+    public ResponseEntity<EmailsResponse> listAllEmail(){
         Set<String> emailList = new HashSet<>();
         authRepository.findAll().forEach(e -> {
             emailList.add(e.getEmail());
         });
-        return ResponseEntity.ok().body(emailList);
+        return ResponseEntity.ok().body(new EmailsResponse(emailList));
     }
 
 }
