@@ -14,17 +14,23 @@ import com.gateway.api_gateway.models.dto.NovaSalaDto;
 import com.gateway.api_gateway.models.dto.UpdateSalaDto;
 import com.gateway.api_gateway.models.exceptions.BadGatewayException;
 import com.gateway.api_gateway.models.exceptions.BadRequestException;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 
 
 @RestController
 @RequestMapping("/gateway")
+@SecurityRequirement(name = "authorization")
 public class RoomGatewayController {
 
     @Autowired
     private RoomGateway roomGateway;
     
     @GetMapping("/room/all")
+    @Operation(summary = "List all rooms", security = @SecurityRequirement(name = "Authorization"))
+    
     public ResponseEntity<?> listAllRooms(HttpServletRequest request) throws BadGatewayException, BadRequestException {
         return roomGateway.listarSalas(request);
     }

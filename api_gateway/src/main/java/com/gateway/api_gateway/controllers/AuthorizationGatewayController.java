@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.gateway.api_gateway.core.AuthorizationGateway;
 import com.gateway.api_gateway.models.dto.AuthDto;
+import com.gateway.api_gateway.models.dto.NovoProfessorDto;
 import com.gateway.api_gateway.models.exceptions.BadGatewayException;
 import com.gateway.api_gateway.models.exceptions.BadRequestException;
 
@@ -25,5 +26,11 @@ public class AuthorizationGatewayController {
     public ResponseEntity<String> loginGateway(@Valid @RequestBody AuthDto dto, HttpServletRequest request) throws BadGatewayException, BadRequestException{
         return authorizationGateway.loginAction(dto.getEmail(), dto.getSenha(), request);
     }
+
+    @PostMapping("/cadastro")
+    public void cadastroGateway(@Valid @RequestBody NovoProfessorDto dto, HttpServletRequest request) throws BadGatewayException, BadRequestException{
+        authorizationGateway.cadastroAction(dto.getNome(), dto.getSobrenome(), dto.getEmail(), dto.getSenha(), request);
+    }
+    
 
 }

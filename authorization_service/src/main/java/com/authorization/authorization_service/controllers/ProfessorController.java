@@ -1,8 +1,7 @@
 package com.authorization.authorization_service.controllers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -34,13 +33,12 @@ public class ProfessorController {
         professorService.save(dto);
     }
 
-    @GetMapping("all/email")
-    public ResponseEntity<List<String>> listAllEmail(){
-        List<String> emailList = authRepository.findAll()
-            .stream()
-            .map(e -> e.getEmail())
-            .collect(Collectors.toList());
-
+    @GetMapping("/all/email")
+    public ResponseEntity<Set<String>> listAllEmail(){
+        Set<String> emailList = new HashSet<>();
+        authRepository.findAll().forEach(e -> {
+            emailList.add(e.getEmail());
+        });
         return ResponseEntity.ok().body(emailList);
     }
 

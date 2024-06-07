@@ -39,15 +39,37 @@ public class AuthorizationGatewayServiceData implements AuthorizationGateway{
 
         } catch (Exception e) {
             throw new BadGatewayException("BadGateway", 502);
+        }finally{
+            if(response.getStatusCode() != 200){
+                throw new BadRequestException(response.getBody(), response.getStatusCode());
+            }
         }
            
-        if(response.getStatusCode() != 200){
-            throw new BadRequestException(response.getBody(), response.getStatusCode());
-        }
 
         return ResponseEntity.ok(response.getBody());
     }
     
+    @Override
+    public void cadastroAction(String nome, String sobrenome, String email, String senha, HttpServletRequest request) throws BadGatewayException, BadRequestException {
+        String baseUrl = getDnsUrl("authorization_service");
+        HttpResponse response = null;
+        try {
+            String JsonBulder = "{\"nome\":\"%s\", \"sobrenome\":\"%s\", \"email\":\"%s\", \"senha\":\"%s\"}";
+            String jsonBody = String.format(JsonBulder, nome, sobrenome, email, senha);
+            Map<String, String> headers = new HashMap<>(){{
+                put(tokenName, extractToken(request));
+                put("Content-Type", "application/json");
+            }};
+            response = httpServicesPost.sendPost(baseUrl+"/new/professor", jsonBody, headers);
+        } catch (Exception e) {
+            throw new BadGatewayException("BadGateway", 502);
+        }finally{
+            if(response.getStatusCode() != 200){
+                throw new BadRequestException(response.getBody(), response.getStatusCode());
+            }
+        }
+
+    }
 
     private String extractToken(HttpServletRequest request){
         String token = request.getHeader(tokenName);
