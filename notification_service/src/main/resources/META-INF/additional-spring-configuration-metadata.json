@@ -1,5 +1,17 @@
-{"properties": [{
-  "name": "spring.apidoc.url.dev",
-  "type": "java.lang.String",
-  "description": "A description for 'spring.apidoc.url.dev'"
-}]}
+{"properties": [
+  {
+    "name": "spring.apidoc.url.dev",
+    "type": "java.lang.String",
+    "description": "A description for 'spring.apidoc.url.dev'"
+  },
+  {
+    "name": "api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'api.key'"
+  },
+  {
+    "name": "token.header.name",
+    "type": "java.lang.String",
+    "description": "A description for 'token.header.name'"
+  }
+]}
