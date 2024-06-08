@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "spring.apidoc.url.dev",
+  "type": "java.lang.String",
+  "description": "A description for 'spring.apidoc.url.dev'"
+}]}

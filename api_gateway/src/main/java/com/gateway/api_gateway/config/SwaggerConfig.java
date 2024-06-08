@@ -27,6 +27,7 @@ public class SwaggerConfig {
         SpringDocUtils.getConfig().addHiddenRestControllers(MainController.class);
     }
     
+    @Bean
     public OpenAPI swaggerDoc(){
         Server devServer = new Server();
         devServer.setUrl(devUrl);
