@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.manager.roommanagementservice.core.RequestValidator;
 import com.manager.roommanagementservice.core.RoomService;
+import com.manager.roommanagementservice.models.Sala;
 import com.manager.roommanagementservice.models.dto.NovaSalaDto;
 import com.manager.roommanagementservice.models.dto.UpdateSalaDto;
 import com.manager.roommanagementservice.models.res.SalasResponse;
@@ -38,6 +39,11 @@ public class SalaController {
     public void newRoom(@Valid @RequestBody NovaSalaDto salaDto, BindingResult bindingResult) throws Exception{
         requestValidator.isValidData(bindingResult);
         roomService.save(salaDto);
+    }
+
+    @GetMapping("/find/{code}")
+    public ResponseEntity<Sala> findByCode(@PathVariable(name = "code") String code) throws Exception{
+        return ResponseEntity.ok().body(roomService.findByCode(code));
     }
 
     @DeleteMapping("/delete/{code}")

@@ -154,6 +154,28 @@ public class RoomGatewayService implements RoomGateway{
         return ResponseEntity.ok(response.getBody());
     }
 
+    @Override
+    public ResponseEntity<?> findRoom(String salaCode, HttpServletRequest request) throws BadGatewayException, BadRequestException {
+        String baseUrl = getDnsUrl("room_management_service");
+        HttpResponse response = null;
+        try {
+            Map<String, String> headers = new HashMap<>(){{
+                put(tokenName, extractToken(request));
+                put("Content-Type", "application/json");
+            }};
+            response = httpServices.sendGet(baseUrl+"/room/find/"+salaCode, headers);
+
+        } catch (Exception e) {
+            throw new BadGatewayException("BadGateway", 502);
+        }
+           
+        if(response.getStatusCode() != 200){
+            throw new BadRequestException(response.getBody(), response.getStatusCode());
+        }
+
+        return ResponseEntity.ok(response.getBody());
+    }
+
     private String extractToken(HttpServletRequest request){
         String token = request.getHeader(tokenName);
 

@@ -13,4 +13,5 @@ public interface RoomGateway {
     ResponseEntity<?> updateRoom(String bloco, int num, String status, String salaCode, HttpServletRequest request) throws BadGatewayException, BadRequestException;
     ResponseEntity<?> updateStatusRoom(String salaCode, HttpServletRequest request) throws BadGatewayException, BadRequestException;
     ResponseEntity<?> deleteRoom(String salaCode, HttpServletRequest request) throws BadGatewayException, BadRequestException;
+    ResponseEntity<?> findRoom(String code, HttpServletRequest request) throws BadGatewayException, BadRequestException;
 }

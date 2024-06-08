@@ -22,36 +22,41 @@ import jakarta.servlet.http.HttpServletRequest;
 
 
 @RestController
-@RequestMapping("/gateway")
+@RequestMapping("/gateway/room")
 @SecurityRequirement(name = "authorization")
 public class RoomGatewayController {
 
     @Autowired
     private RoomGateway roomGateway;
     
-    @GetMapping("/room/all")
+    @GetMapping("/all")
     @Operation(summary = "List all rooms", security = @SecurityRequirement(name = "Authorization"))
-    
     public ResponseEntity<?> listAllRooms(HttpServletRequest request) throws BadGatewayException, BadRequestException {
         return roomGateway.listarSalas(request);
     }
 
-    @PostMapping("/room/new")
+    @GetMapping("/find/{code}")
+    public ResponseEntity<?> findRoom(@PathVariable(name = "code") String code, HttpServletRequest request)  throws BadGatewayException, BadRequestException{
+        System.out.println(code);
+        return roomGateway.findRoom(code, request);
+    }
+
+    @PostMapping("/new")
     public ResponseEntity<?> newRoom(@RequestBody NovaSalaDto dto, HttpServletRequest request) throws BadGatewayException, BadRequestException {
         return roomGateway.newRoom(dto.getBloco(), dto.getNum(), request);
     }
 
-    @PutMapping("/room/update/{code}")
+    @PutMapping("/update/{code}")
     public ResponseEntity<?> updateRoom(@RequestBody UpdateSalaDto dto, @PathVariable(name = "code") String code, HttpServletRequest request)  throws BadGatewayException, BadRequestException{
         return roomGateway.updateRoom(dto.getBloco(), dto.getNum(), dto.getStatus(), code, request);
     }
 
-    @DeleteMapping("/room/delete/{code}")
+    @DeleteMapping("/delete/{code}")
     public ResponseEntity<?> updateRoom(@PathVariable(name = "code") String code, HttpServletRequest request)  throws BadGatewayException, BadRequestException{
         return roomGateway.deleteRoom(code, request);
     }
 
-    @PutMapping("/room/status/{code}")
+    @PutMapping("/status/{code}")
     public ResponseEntity<?> updateStatusRoom(@PathVariable(name = "code") String code, HttpServletRequest request)  throws BadGatewayException, BadRequestException{
         return roomGateway.updateStatusRoom(code, request);
     }

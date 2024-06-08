@@ -87,6 +87,12 @@ public class SalaService implements RoomService{
 
     
     @Override
+    public Sala findByCode(String code) throws Exception {
+        return findByCodeOrError(code);
+    }
+
+    
+    @Override
     public void changeStatus(String code) throws Exception{
         Sala sala = findByCodeOrError(code);
         if(sala.getStatus().equalsIgnoreCase("ocupado")){
