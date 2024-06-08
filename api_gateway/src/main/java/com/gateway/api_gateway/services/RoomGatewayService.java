@@ -15,6 +15,7 @@ import com.gateway.api_gateway.core.http.HttpServices;
 import com.gateway.api_gateway.models.dto.EmailsDto;
 import com.gateway.api_gateway.models.exceptions.BadGatewayException;
 import com.gateway.api_gateway.models.exceptions.BadRequestException;
+import com.gateway.api_gateway.models.request.NotificationRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -73,7 +74,7 @@ public class RoomGatewayService implements RoomGateway{
             throw new BadRequestException(response.getBody(), response.getStatusCode());
         }
 
-        notificateNewAsync(request);
+        notificateNewAsync(request, bloco.toUpperCase()+num);
 
         return ResponseEntity.ok(response.getBody());
     }
@@ -124,6 +125,28 @@ public class RoomGatewayService implements RoomGateway{
         return ResponseEntity.ok(response.getBody());
     }
 
+    @Override
+    public ResponseEntity<?> deleteRoom(String salaCode, HttpServletRequest request) throws BadGatewayException, BadRequestException {
+        String baseUrl = getDnsUrl("room_management_service");
+        HttpResponse response = null;
+        try {
+            Map<String, String> headers = new HashMap<>(){{
+                put(tokenName, extractToken(request));
+                put("Content-Type", "application/json");
+            }};
+            response = httpServices.sendDelete(baseUrl+"/room/delete/"+salaCode, headers);
+
+        } catch (Exception e) {
+            throw new BadGatewayException("BadGateway", 502);
+        }
+           
+        if(response.getStatusCode() != 200){
+            throw new BadRequestException(response.getBody(), response.getStatusCode());
+        }
+
+        return ResponseEntity.ok(response.getBody());
+    }
+
     private String extractToken(HttpServletRequest request){
         String token = request.getHeader(tokenName);
 
@@ -137,16 +160,39 @@ public class RoomGatewayService implements RoomGateway{
     private String getDnsUrl(String appName){
         if(appName.equals("authorization_service")){
             return "http://localhost:8081";
+        }else if(appName.equals("room_management_service")){
+            return "http://localhost:8082";
         }
-        return "http://localhost:8082";
+        return "http://localhost:8083";
     }
     
-    @SuppressWarnings({"unused"})
-    private void notificateNewAsync(HttpServletRequest request){
+    private void notificateNewAsync(HttpServletRequest request, String sala){
         Thread notificator = new Thread(() -> {
+            Map<String, String> headers = new HashMap<>(){{
+                put(tokenName, extractToken(request));
+                put("Content-Type", "application/json");
+            }};
+            HttpResponse response = null;
             try {
                 Set<String> emails = getListEmails(request);
+                NotificationRequest requestSend = NotificationRequest.builder()
+                    .message("Nova sala crianda: "+sala)
+                    .title("AVISO NOVA SALA")
+                    .receivers(emails)
+                .build();
+                ObjectMapper mapper = new ObjectMapper();
+                String json = mapper.writeValueAsString(requestSend);
+                String url = getDnsUrl("notification_service")+"/all/notificate";
+                response = httpServices.sendPost(url, json, headers);
+
+                if(response.getStatusCode() != 200){
+                    throw new BadRequestException(response.getBody(), response.getStatusCode());
+                }
             } catch (BadGatewayException |  BadRequestException e) { 
+                //add log
+                System.out.println(e.getMessage());
+            }catch(Exception e){
+                System.out.println(e.getMessage());
                 //add log
             }
             
@@ -186,6 +232,6 @@ public class RoomGatewayService implements RoomGateway{
         return emailsList;
 
     }
-    
+
 
 }

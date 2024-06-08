@@ -75,6 +75,12 @@ public class SalaService implements RoomService{
     }
 
     @Override
+    public void deleteRoom(String code) throws Exception {
+        Sala sala = findByCodeOrError(code);
+        roomRepository.delete(sala);
+    }
+
+    @Override
     public List<Sala> listAll() {
         return roomRepository.findAll();
     }
@@ -127,4 +133,5 @@ public class SalaService implements RoomService{
             throw new Exception("status invalido escolha entre {disponivel, ocupado, manutencao}");
         }
     }
+
 }

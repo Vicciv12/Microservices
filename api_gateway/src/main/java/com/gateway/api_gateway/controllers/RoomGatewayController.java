@@ -2,6 +2,7 @@ package com.gateway.api_gateway.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,6 +44,11 @@ public class RoomGatewayController {
     @PutMapping("/room/update/{code}")
     public ResponseEntity<?> updateRoom(@RequestBody UpdateSalaDto dto, @PathVariable(name = "code") String code, HttpServletRequest request)  throws BadGatewayException, BadRequestException{
         return roomGateway.updateRoom(dto.getBloco(), dto.getNum(), dto.getStatus(), code, request);
+    }
+
+    @DeleteMapping("/room/delete/{code}")
+    public ResponseEntity<?> updateRoom(@PathVariable(name = "code") String code, HttpServletRequest request)  throws BadGatewayException, BadRequestException{
+        return roomGateway.deleteRoom(code, request);
     }
 
     @PutMapping("/room/status/{code}")

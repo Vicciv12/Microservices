@@ -28,7 +28,6 @@ public class SecurityFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String token = getToken(request);
-            System.out.println(token);
             tokenService.isValidToken(token);
             UsernamePasswordAuthenticationToken anonymousAuthentication = new UsernamePasswordAuthenticationToken(null, null, Arrays.asList());
             SecurityContextHolder.getContext().setAuthentication(anonymousAuthentication);

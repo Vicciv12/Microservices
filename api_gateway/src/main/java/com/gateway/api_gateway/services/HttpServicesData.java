@@ -8,12 +8,13 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import com.gateway.api_gateway.core.http.HttpResponse;
 import com.gateway.api_gateway.core.http.HttpServices;
+import com.gateway.api_gateway.core.http.HttpServicesDelete;
 import com.gateway.api_gateway.core.http.HttpServicesGet;
 import com.gateway.api_gateway.core.http.HttpServicesPost;
 import com.gateway.api_gateway.core.http.HttpServicesPut;
 
 @Service
-public class HttpServicesData implements HttpServicesGet, HttpServicesPost, HttpServicesPut, HttpServices{
+public class HttpServicesData implements HttpServicesGet, HttpServicesPost, HttpServicesPut, HttpServicesDelete, HttpServices{
 
     @Override
     public HttpResponse sendGet(String url, Map<String, String> headers) throws Exception{
@@ -43,6 +44,16 @@ public class HttpServicesData implements HttpServicesGet, HttpServicesPost, Http
     @Override
     public HttpResponse sendPut(String url, String jsonBody) throws Exception{
         return makePutRequest(url, jsonBody, null);
+    }
+
+    @Override
+    public HttpResponse sendDelete(String url, Map<String, String> headers) throws Exception {
+        return makeDeleteRequest(url, headers);
+    }
+
+    @Override
+    public HttpResponse sendDelete(String url) throws Exception {
+       return makeDeleteRequest(url, null);
     }
 
 
@@ -90,6 +101,24 @@ public class HttpServicesData implements HttpServicesGet, HttpServicesPost, Http
         HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
         requestBuilder.uri(URI.create(url));
         requestBuilder.PUT(BodyPublishers.ofString(jsonBody));
+        if(headers != null){
+            for(Map.Entry<String,String> entry : headers.entrySet()){
+                requestBuilder.header(entry.getKey(), entry.getValue());
+            }
+        }
+        HttpRequest request = requestBuilder.build();
+        java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+        respHttpResponse = new HttpResponseData(response.body(), response.statusCode());
+
+        return respHttpResponse;  
+    }
+
+    private HttpResponse makeDeleteRequest(String url, Map<String, String> headers) throws Exception{
+        HttpResponse respHttpResponse = null;
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest.Builder requestBuilder = HttpRequest.newBuilder();
+        requestBuilder.uri(URI.create(url));
+        requestBuilder.DELETE();
         if(headers != null){
             for(Map.Entry<String,String> entry : headers.entrySet()){
                 requestBuilder.header(entry.getKey(), entry.getValue());

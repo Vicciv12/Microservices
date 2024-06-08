@@ -11,4 +11,5 @@ public interface RoomService {
     void save(UpdateSalaDto salaDto, String code) throws Exception;   
     List<Sala> listAll();
     void changeStatus(String code) throws Exception;
+    void deleteRoom(String code) throws Exception;
 }

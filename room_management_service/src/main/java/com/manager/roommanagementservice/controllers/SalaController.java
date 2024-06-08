@@ -3,6 +3,7 @@ package com.manager.roommanagementservice.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,11 @@ public class SalaController {
     public void newRoom(@Valid @RequestBody NovaSalaDto salaDto, BindingResult bindingResult) throws Exception{
         requestValidator.isValidData(bindingResult);
         roomService.save(salaDto);
+    }
+
+    @DeleteMapping("/delete/{code}")
+    public void deleteRoom(@PathVariable(name = "code") String code) throws Exception{
+        roomService.deleteRoom(code);
     }
 
     @PutMapping("/update/{code}")
