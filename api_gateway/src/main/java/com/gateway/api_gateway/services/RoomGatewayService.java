@@ -2,6 +2,7 @@ package com.gateway.api_gateway.services;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ import com.gateway.api_gateway.core.RoomGateway;
 import com.gateway.api_gateway.core.http.HttpResponse;
 import com.gateway.api_gateway.core.http.HttpServices;
 import com.gateway.api_gateway.models.dto.EmailsDto;
+
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import com.gateway.api_gateway.models.exceptions.BadGatewayException;
 import com.gateway.api_gateway.models.exceptions.BadRequestException;
 import com.gateway.api_gateway.models.request.NotificationRequest;
@@ -28,6 +32,9 @@ public class RoomGatewayService implements RoomGateway{
 
     @Autowired
     private HttpServices httpServices;
+
+    @Autowired
+    private DiscoveryClient discoveryClient;
 
     @Override
     public ResponseEntity<String> listarSalas(HttpServletRequest request) throws BadGatewayException, BadRequestException {
@@ -158,20 +165,20 @@ public class RoomGatewayService implements RoomGateway{
     }
 
     private String getDnsUrl(String appName){
-        if(appName.equals("authorization_service")){
-            return "http://localhost:8081";
-        }else if(appName.equals("room_management_service")){
-            return "http://localhost:8082";
+        List<ServiceInstance> instances = discoveryClient.getInstances(appName);
+        if (instances != null && !instances.isEmpty()) {
+            return instances.get(0).getUri().toString();
         }
         return "http://localhost:8083";
     }
     
     private void notificateNewAsync(HttpServletRequest request, String sala){
+        String url = getDnsUrl("notification_service")+"/all/notificate";
+        Map<String, String> headers = new HashMap<>(){{
+            put(tokenName, extractToken(request));
+            put("Content-Type", "application/json");
+        }};
         Thread notificator = new Thread(() -> {
-            Map<String, String> headers = new HashMap<>(){{
-                put(tokenName, extractToken(request));
-                put("Content-Type", "application/json");
-            }};
             HttpResponse response = null;
             try {
                 Set<String> emails = getListEmails(request);
@@ -182,7 +189,6 @@ public class RoomGatewayService implements RoomGateway{
                 .build();
                 ObjectMapper mapper = new ObjectMapper();
                 String json = mapper.writeValueAsString(requestSend);
-                String url = getDnsUrl("notification_service")+"/all/notificate";
                 response = httpServices.sendPost(url, json, headers);
 
                 if(response.getStatusCode() != 200){
