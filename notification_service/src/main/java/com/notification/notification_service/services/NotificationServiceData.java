@@ -60,6 +60,23 @@ public class NotificationServiceData implements NotificationService{
             .send()
         );
     }
+
+    @Override
+    public void notificateSingle(String title, String message, HttpServletRequest request) throws Exception {
+        salvarEmissor(request);
+        String to = getEmailByToken(request);
+        emailService.sendEmail(configurer -> configurer
+            .async(true)
+            .messageBundle(MessageBundle.SIMPLEBUNDLE)
+            .receiver(to)
+            .message(message)
+            .subject(title)
+            .callback((hasError, $) -> {
+                System.out.println($);
+            })
+            .send()
+        );
+    }
     
     private void salvarEmissor(HttpServletRequest request) throws Exception{
         String email = getEmailByToken(request);

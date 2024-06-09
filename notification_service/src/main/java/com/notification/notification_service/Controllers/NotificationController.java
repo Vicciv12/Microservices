@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.notification.notification_service.core.NotificationService;
 import com.notification.notification_service.core.RequestValidator;
+import com.notification.notification_service.models.dto.MeNotificationDto;
 import com.notification.notification_service.models.dto.MutipleNotificationDto;
 import com.notification.notification_service.models.dto.SingleNotificationDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,12 @@ public class NotificationController {
     public void notificateAll(@Valid @RequestBody MutipleNotificationDto dto, HttpServletRequest request, BindingResult bindingResult) throws Exception{
         requestValidator.isValidData(bindingResult);
         notificationService.notificateAll(dto.getReceivers(), dto.getTitle(), dto.getMessage(), request);
+    }
+
+    @PostMapping("/me/notificate")
+    public void notificateSingleByMe(@Valid @RequestBody MeNotificationDto dto, HttpServletRequest request, BindingResult bindingResult) throws Exception{
+        requestValidator.isValidData(bindingResult);
+        notificationService.notificateSingle(dto.getTitle(), dto.getMessage(), request);
     }
 
 }
