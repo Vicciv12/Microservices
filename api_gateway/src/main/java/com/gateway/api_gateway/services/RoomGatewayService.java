@@ -61,7 +61,6 @@ public class RoomGatewayService implements RoomGateway{
     @Override
     public ResponseEntity<?> newRoom(String bloco, int num, HttpServletRequest request) throws BadGatewayException, BadRequestException {
 
-
         String baseUrl = getDnsUrl("room_management_service");
         HttpResponse response = null;
         try {

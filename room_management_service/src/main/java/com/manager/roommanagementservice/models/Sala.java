@@ -37,7 +37,7 @@ public class Sala {
         }else if(number >= 10 && number < 100){
             codeBuilder.append("0"+number);  
         }else{
-            codeBuilder.append(+number);  
+            codeBuilder.append(number);  
         }
         code = codeBuilder.toString().toUpperCase();
     }
