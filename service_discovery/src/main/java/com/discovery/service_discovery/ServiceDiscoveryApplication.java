@@ -1,4 +1,4 @@
-package com.discovery.service_discovery;
+package com.discovery.service_discovery; 
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

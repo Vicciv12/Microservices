@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 @Service
 public class ExtractorService implements Extractor<String>{
 
-    @Value("${token.header.name}")
+    @Value("${token.header.name}" )
     private String tokenHeaderName;
 
     @Value("${api.key}")

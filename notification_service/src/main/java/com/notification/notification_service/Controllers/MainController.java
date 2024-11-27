@@ -13,4 +13,4 @@ public class MainController {
         return new RedirectView("/swagger-ui/index.html");
     }
 
-}
+} 

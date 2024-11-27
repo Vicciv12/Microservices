@@ -23,6 +23,6 @@ public class AgendamentoGateway {
     
     @PostMapping("/agendamento/new")
     private void scheduleRoom(@Valid @RequestBody ScheduleDto scheduleDto, HttpServletRequest request) throws BadGatewayException, BadRequestException{
-        scheduleGateway.scheduleRoom(scheduleDto, request);
+        scheduleGateway.scheduleRoom(scheduleDto, request );
     }
 }

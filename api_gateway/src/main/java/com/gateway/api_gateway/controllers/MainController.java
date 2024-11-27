@@ -10,7 +10,7 @@ public class MainController {
     
     @GetMapping("/")
     public RedirectView  renderSwagger(){
-        return new RedirectView("/swagger-ui/index.html");
+        return new RedirectView("/swagger-ui/index.html" );
     }
 
 }

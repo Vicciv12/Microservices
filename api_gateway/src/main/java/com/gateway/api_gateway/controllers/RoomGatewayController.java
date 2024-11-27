@@ -23,7 +23,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/gateway/room")
-@SecurityRequirement(name = "authorization")
+@SecurityRequirement(name = "authorization" )
 public class RoomGatewayController {
 
     @Autowired

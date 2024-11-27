@@ -16,7 +16,7 @@ public class ValidationRequestService implements RequestValidator{
                 errors.append(e.getDefaultMessage());
                 errors.append("\n");
             });
-            throw new Exception(errors.toString());
+            throw new Exception(errors.toString()); 
         }
     }
 }

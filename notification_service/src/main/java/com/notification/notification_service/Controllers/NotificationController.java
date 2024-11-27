@@ -37,7 +37,7 @@ public class NotificationController {
     @PostMapping("/me/notificate")
     public void notificateSingleByMe(@Valid @RequestBody MeNotificationDto dto, HttpServletRequest request, BindingResult bindingResult) throws Exception{
         requestValidator.isValidData(bindingResult);
-        notificationService.notificateSingle(dto.getTitle(), dto.getMessage(), request);
+        notificationService.notificateSingle(dto.getTitle(), dto.getMessage(), request );
     }
 
 }

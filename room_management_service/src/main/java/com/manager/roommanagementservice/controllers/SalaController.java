@@ -54,7 +54,7 @@ public class SalaController {
     @PutMapping("/update/{code}")
     public void UpdateRoom(@Valid @RequestBody UpdateSalaDto salaDto, @PathVariable(name = "code") String code ,BindingResult bindingResult) throws Exception{
         requestValidator.isValidData(bindingResult);
-        roomService.save(salaDto, code);
+        roomService.save(salaDto, code );
     }
 
     @PutMapping("/status/{code}")

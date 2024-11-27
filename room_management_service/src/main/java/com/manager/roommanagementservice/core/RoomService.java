@@ -12,5 +12,5 @@ public interface RoomService {
     List<Sala> listAll();
     void changeStatus(String code) throws Exception;
     void deleteRoom(String code) throws Exception;
-    Sala findByCode(String code) throws Exception;
+    Sala findByCode(String code) throws Exception; 
 }

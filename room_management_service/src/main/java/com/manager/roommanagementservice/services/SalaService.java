@@ -77,7 +77,7 @@ public class SalaService implements RoomService{
     @Override
     public void deleteRoom(String code) throws Exception {
         Sala sala = findByCodeOrError(code);
-        roomRepository.delete(sala);
+        roomRepository.delete(sala); 
     }
 
     @Override

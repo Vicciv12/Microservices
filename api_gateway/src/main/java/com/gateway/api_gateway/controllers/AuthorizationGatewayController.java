@@ -29,7 +29,7 @@ public class AuthorizationGatewayController {
 
     @PostMapping("/cadastro")
     public void cadastroGateway(@Valid @RequestBody NovoProfessorDto dto, HttpServletRequest request) throws BadGatewayException, BadRequestException{
-        authorizationGateway.cadastroAction(dto.getNome(), dto.getSobrenome(), dto.getEmail(), dto.getSenha(), request);
+        authorizationGateway.cadastroAction(dto.getNome(), dto.getSobrenome(), dto.getEmail(), dto.getSenha(), request );
     }
     
 
