@@ -39,7 +39,18 @@ public class SecurityFilter extends OncePerRequestFilter{
 
     private String getToken(HttpServletRequest request){
 
-        return request.getHeader(tokenName);
+        try{
+          	String token = request.getHeader(tokenName);
+          	if(token.startsWith("Bearer ")){
+              return token.substring("Bearer ".length());
+            }else if(token.startsWith("Bearer")){
+              return token.substring("Bearer".length());
+            }
+          throw new Exception("Token Invalido");
+        }catch(Exception e){
+          
+        }
+    return "";
     }
     
 }

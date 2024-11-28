@@ -9,10 +9,13 @@ import org.springframework.context.annotation.Configuration;
 import com.gateway.api_gateway.controllers.MainController;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.parameters.HeaderParameter;
 import io.swagger.v3.oas.models.servers.Server;
+import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.parameters.Parameter;
 
 @Configuration
 public class SwaggerConfig {
@@ -38,18 +41,33 @@ public class SwaggerConfig {
             .version("1.0")
         .description("api para endpoints da api Gateway.");
 
-        SecurityScheme securityScheme = new SecurityScheme()
-            .type(SecurityScheme.Type.APIKEY)
-            .name(tokenName)
-            .in(SecurityScheme.In.HEADER);
+       Parameter authorizationHeader = new Parameter()
+            .name("Authorization")
+            .in("header")
+            .description("Token de autenticação")
+            .required(true)
+            .schema(new Schema<String>().type("string"));
 
-        SecurityRequirement securityRequirement = new SecurityRequirement().addList(tokenName);
+            SecurityScheme securityScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT") 
+                .name("Authorization");
+
+            SecurityRequirement securityRequirement = new SecurityRequirement()
+                .addList("Authorization");
+
+        Components components = new Components()
+            .addSecuritySchemes("Authorization", securityScheme)
+            .addParameters("AuthorizationHeader", authorizationHeader);
 
         return new OpenAPI()
+            .components(components)
             .info(info)
             .addServersItem(devServer)
             .components(new io.swagger.v3.oas.models.Components().addSecuritySchemes(tokenName, securityScheme))
             .addSecurityItem(securityRequirement);
+            
     }
 
     @Bean
